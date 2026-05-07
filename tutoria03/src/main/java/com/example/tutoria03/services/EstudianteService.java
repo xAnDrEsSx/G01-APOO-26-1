@@ -1,6 +1,7 @@
 package com.example.tutoria03.services;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,24 +25,24 @@ public class EstudianteService {
     }
 
     public Estudiante update(Estudiante estudiante){
+        return buscarEstudiantePorId(estudiante.getId())
+                .map(existing -> estudianteRepository.save(estudiante))
+                .orElse(null);
+    }
 
-        var existeEstudiante = estudianteRepository.findById(estudiante.getId());
+    public boolean delete(int id){
+        var estudiante = buscarEstudiantePorId(id);
 
-        if(existeEstudiante != null){
-            return estudianteRepository.save(estudiante);
-        }else{
-            return null;
+        if(estudiante.isPresent()){
+            estudianteRepository.deleteById(id);
+            return true;
         }
 
+        return false;
     }
 
-
-    private void Delete(int id){
-       // implementar logica para borrado
-       // consultar previamente si existe el estudiante
-       // crear un metodo que unifique la consulta de si existe estudiante
-       //  para poder unificar tanta en Delete como en el update
+    private Optional<Estudiante> buscarEstudiantePorId(int id){
+        return estudianteRepository.findById(id);
     }
 
-    
 }
