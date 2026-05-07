@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpStatus;
+
 
 
 @RestController
@@ -37,5 +41,18 @@ public class EstudianteController {
     public ResponseEntity<Estudiante> update(@RequestBody Estudiante estudiante){
         return ResponseEntity.ok(estudianteService.update(estudiante) );
     }
+
+
+@DeleteMapping("/{id}")
+public ResponseEntity<?> delete(@PathVariable int id){
+    boolean eliminado = estudianteService.delete(id);
+
+    if(eliminado){
+        return ResponseEntity.ok("Estudiante eliminado correctamente");
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .body("Estudiante no encontrado");
+    }
+}
 
 }

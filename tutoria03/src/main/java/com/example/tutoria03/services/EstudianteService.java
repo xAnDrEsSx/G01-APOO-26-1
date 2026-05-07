@@ -10,8 +10,7 @@ import com.example.tutoria03.repositories.IEstudianteRepository;
 
 @Service
 public class EstudianteService {
-    
-    // crear una instancia de repository
+
     @Autowired
     private IEstudianteRepository estudianteRepository;
 
@@ -23,25 +22,32 @@ public class EstudianteService {
         return estudianteRepository.save(estudiante);
     }
 
-    public Estudiante update(Estudiante estudiante){
+    //  Método unificado para consultar si existe el estudiante
+    //    (reutilizado en update y en Delete)
+    private Estudiante findEstudianteById(int id){
+        return estudianteRepository.findById(id).orElse(null);
+    }
 
-        var existeEstudiante = estudianteRepository.findById(estudiante.getId());
+    public Estudiante update(Estudiante estudiante){
+        // Ahora usa el método unificado
+        Estudiante existeEstudiante = findEstudianteById(estudiante.getId());
 
         if(existeEstudiante != null){
             return estudianteRepository.save(estudiante);
-        }else{
+        } else {
             return null;
         }
-
     }
 
+    //  Lógica de Delete implementada
+    public boolean delete(int id){
+        Estudiante existeEstudiante = findEstudianteById(id);
 
-    private void Delete(int id){
-       // implementar logica para borrado
-       // consultar previamente si existe el estudiante
-       // crear un metodo que unifique la consulta de si existe estudiante
-       //  para poder unificar tanta en Delete como en el update
+        if(existeEstudiante != null){
+            estudianteRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
-
-    
 }
